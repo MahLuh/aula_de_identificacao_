@@ -1,0 +1,34 @@
+function preload(){
+classifier = ml5.imageClassifier("DoodleNet")
+}
+function setup() {
+   canvas = createCanvas(610, 300);
+   canvas.center()
+   background("white")
+   canvas.mouseReleased(classifyCanvas)
+   synth = window.speechSynthesis
+}
+function clearCanvas() {
+   background("white")
+}
+function classifyCanvas(){
+   classifier.classify(canvas, gotResult)
+}
+function gotResult(error, results){
+      if(error){
+         console.error(error)
+      }
+      console.log(results)
+      var result = results[0].label
+      document.getElementById("label").innerHTML = "nome : " + result.replace("_", " ")
+      document.getElementById("confidence").innerHTML = "precisão : " + Math.round(results[0].confidence*100) + "%"
+      utterThis = new SpeechSynthesisUtterance(result.replace("_", " "))
+      synth.speak(utterThis)
+}
+function draw(){
+   stroke(0)
+   strokeWeight(10)
+   if (mouseIsPressed){
+      line(pmouseX, pmouseY, mouseX, mouseY)
+   }
+}
